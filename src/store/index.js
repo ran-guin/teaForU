@@ -1,15 +1,23 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+import cart from './cart'
+
 Vue.use(Vuex)
 
-export default new Vuex.Store({
+const debug = process.env.NODE_ENV !== 'production'
+
+const store = new Vuex.Store({
+
   state: {
+    status: 'initialized'
   },
-  mutations: {
-  },
-  actions: {
-  },
+
   modules: {
-  }
+    cart
+  },
+
+  strict: debug
 })
+
+export default store

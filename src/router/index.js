@@ -1,14 +1,37 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import Teas from '../views/Teas.vue'
+import Cart from '../views/Cart.vue'
+import Public from '../views/Public.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
+    name: 'Default',
+    component: Home
+  },
+  {
+    path: '/Home',
     name: 'Home',
     component: Home
+  },
+  {
+    path: '/Public',
+    name: 'Public',
+    component: Public
+  },
+  {
+    path: '/Teas',
+    name: 'Teas',
+    component: Teas
+  },
+  {
+    path: '/Cart',
+    name: 'Cart',
+    component: Cart
   },
   {
     path: '/about',
