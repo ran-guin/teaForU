@@ -56,7 +56,7 @@ export default {
       return "padding: " + this.$vuetify.breakpoint.width / 30 + "px;"
     },
     image () {
-      return '@/assets/images/' + this.images[this.index]
+      return './assets/images/' + this.images[this.index]
     }
   },
   methods: {
