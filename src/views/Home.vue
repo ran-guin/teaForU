@@ -2,11 +2,8 @@
   PageLayout(page='Home')
     v-row.justify-space-around.align-center.fullBody
       v-flex(lg6)
-        img.fullBody(:src='images[3]')
+        Images
 
-        //- v-carousel(cycle interval='4000' hide-delimiters hide-delimiter-background show-arrows-on-hover touchless)
-        //-   v-carousel-item(v-for='image, i in images' :key='i')
-        //-     img.center.padded(:src='images[i]' height='100%')         
       v-flex(lg6)
         v-card.coloured(width='300px')
           v-card-text
@@ -19,6 +16,7 @@
 // @ is an alias to /src
 import PageLayout from '@/layouts/PageLayout.vue'
 import Quotes from '@/components/Quotes.vue'
+import Images from '@/components/Images.vue'
 import Shared from '@/mixins/Shared.vue'
 
 // import config from '@/config'
@@ -27,7 +25,8 @@ export default {
   name: 'Home',
   components: {
     PageLayout,
-    Quotes
+    Quotes,
+    Images
   },
   mixins: [
     Shared

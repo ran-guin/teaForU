@@ -24,7 +24,7 @@ export default {
   },
   computed: {
     image () {
-      return this.images[this.imageIndex]
+      return '@/assets/images/' + this.images[this.imageIndex]
     }
   },
   methods: {
