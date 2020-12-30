@@ -43,7 +43,10 @@
         onSelect: { type: Function }
     },
     async created () {
-        console.log('load ' + this.category + ' teas...')
+        console.log('load ' + this.category + ' Teas...')
+
+        this.selected = this.allSelected
+        console.log("(pre)-Selected: " + JSON.stringify(this.selected))
         this.Teas = await this.getTea({category: this.category})
         this.reloadList()
     },
@@ -68,10 +71,10 @@
             this.reloadList()
         },
         selected () {
-          console.log('selected list updated..')
+          console.log('selected list updated..' + this.selected)
           var items = this.selected.map(a => {
             a.cost = a.cost_100g || 0
-            a.qty = 1
+            a.qty = a.qty || 1
             a.size = '100g'
             return a
           })

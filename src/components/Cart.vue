@@ -91,6 +91,9 @@ export default {
     add: { type: Function },
     recalculate: { type: Function },
   },
+  created () {
+    console.log("Contents: " + JSON.stringify(this.contents))
+  },
   computed: {
     contents () {
       return this.$store.getters.contentsOfCart
