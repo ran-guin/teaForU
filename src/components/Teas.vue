@@ -1,54 +1,57 @@
 <template lang='pug'>
     div
-        h3 {{type}} teas...
+        h3 {{category}} teas...
        
         v-data-table(:headers='headers' :items='showTeas' :show-select='selectable' v-model='selected' item-key='name')
-        hr
-        h4 Selected:
-        h5(v-for='tea in selected') {{tea}}
-        hr
-        h4 AllSelected:
-        h5(v-for='tea in allSelected') {{tea}}
+          template(v-slot:item.caffeine_free="{ item }")
+            v-icon(v-if='item.caffeine_free' color='green') mdi-check
 </template>
 <script>
-  // import config from '@/config'
-  import teaList from '@/teas'
+  import Shared from '@/mixins/Shared'
 
   export default {
+    mixins: [
+      Shared
+    ],
     data () {
       return {
           selectable: true,
           selected: [],
-          Teas: teaList.Teas || [],
+          Teas: [],
           showTeas: [],
 
           headers: [
             {
-                text: 'Tea',
+                text: 'Name',
                 align: 'start',
                 sortable: true,
                 value: 'name',
             },
-            // { text: 'Category', value: 'type' },
-            { text: 'Type', value: 'subtype' },
-            { text: 'Cost (100g)', value: 'cost_100g' },
-            { text: 'Cost (200g)', value: 'cost_200g' },
-            { text: 'Caffeine', value: 'caffeine' },
+            { text: 'Category', value: 'category' },
+            { text: 'Type', value: 'type' },
+            { text: 'Price (100g)', value: 'cost_100g' },
+            // { text: 'Price (100g)', value: 'Price (100g)' },
+            // { text: 'Location'},
+            // { text: 'Cost (100g)', value: 'cost_100g' },
+            // { text: 'Cost (200g)', value: 'cost_200g' },
+            { text: 'caffeine-free', value: 'caffeine_free' },
           ]
       }
     },
     props: {
-        type: { type: String },
+        category: { type: String },
         onSelect: { type: Function }
     },
-    created () {
-        console.log('load ' + this.type + ' teas...')
+    async created () {
+        console.log('load ' + this.category + ' teas...')
+        this.Teas = await this.getTea({category: this.category})
         this.reloadList()
     },
     methods: {
-        reloadList () {
-            if (this.type) {
-                this.showTeas = this.Teas.filter(a => { return (a.type === this.type) })
+        async reloadList () {
+            if (this.category) {
+                this.showTeas = await this.getTea({category: this.category})
+                // this.Teas.filter(a => { return (a.category === this.category) })
                 console.log('filtered tea list to ' + this.showTeas.length)
             } else {
                 this.showTeas = this.Teas
@@ -61,7 +64,7 @@
       }
     },
     watch: {
-        type () {
+        category () {
             this.reloadList()
         },
         selected () {

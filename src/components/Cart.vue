@@ -20,10 +20,10 @@
                   td.centred
                     input(type='number' size=5 v-model='item.qty')
                   td {{item.name}}
-                  td.centred(text-align='center') ${{item.cost}}
+                  td.centred(text-align='center') {{item.cost}}
                   td.centred(v-if='sizes') {{item.size}}
                   td.centred()
-                    b.subtotal ${{ Number((item.qty * item.cost).toFixed(2)) }}
+                    b.subtotal ${{ subtotal(item.cost, item.qty) }}
               v-row.justify-space-between.align-center.total 
                 h4.subtotal Sub-total: ${{ Number((items.subtotal).toFixed(2)) }}
               h3 Delivery Information:
@@ -106,6 +106,9 @@ export default {
       for (var i = 0; i < ids.length; i++) {
         var qty = this.contents[i].qty || 1
         var price = this.contents[i].cost || 0
+        if (price.constructor === String) {
+          price = price.replace('$', '')
+        }
         // var subtotal = this.contents[ids[i]].cost * qty
         // total += subtotal
         count += qty
@@ -132,6 +135,15 @@ export default {
       } else {
         console.log('no add function supplied')
       }
+    },
+    subtotal (cost, qty) {
+      if (cost.constructor === String) {
+        cost = cost.replace('$','')
+      } else {
+        cost = cost || 0
+      }
+
+      return Number((cost * qty).toFixed(2))
     }
   }
 }

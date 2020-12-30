@@ -20,7 +20,7 @@ export default {
   },
   data: () => ({
     loading: false,
-    publishableKey: process.env.PUBLISHABLE_KEY,
+    publishableKey: process.env.PUBLISHABLE_KEY || 'abc',
     items: [
       {
         sku: 'sku_FdQKocNoVzznpJ', 

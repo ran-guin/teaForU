@@ -34,6 +34,11 @@ const routes = [
     component: Cart
   },
   {
+    path: '/Admin',
+    name: 'Admin',
+    component: () => import('../components/Admin.vue')
+  },
+  {
     path: '/about',
     name: 'About',
     // route level code-splitting

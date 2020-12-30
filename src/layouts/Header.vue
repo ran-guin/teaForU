@@ -16,7 +16,7 @@
                 router-link(to='/Cart')
                   v-icon.dark mdi-cart
           span
-            v-btn.btn-primary(v-if='loggedIn' @click='showLogin=true').right Logout
+            v-btn.btn-primary(v-if='loggedIn' @click='logout()').right Logout
             v-btn.btn-primary(v-else @click='showLogin=true').right Login
             b.right.padded(v-if='loggedIn') {{currentUser.email}}
     v-dialog(v-model='showLogin' max-width='600px')
@@ -59,6 +59,15 @@
       },
       closeDialog () {
         this.showLogin = false
+      },
+      logout () {
+        this.firebaseLogout()
+        .then (response => {
+          console.log('logged out ' + JSON.stringify(response))
+        })
+        .catch (err => {
+          console.log('err: ' + err.message)
+        })
       },
       visit (i) {
         var page = this.pages[i]

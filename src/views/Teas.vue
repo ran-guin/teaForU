@@ -12,7 +12,7 @@
             v-container(:style='padding')
               v-card(elevation='9')
                 v-card-text
-                  Teas(:type='teaType')
+                  Teas(:category='teaType')
 
       v-flex(v-if='$vuetify.breakpoint.lgAndUp' lg4)
           Images

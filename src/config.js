@@ -1,7 +1,7 @@
 export default {
     headerTitle: 'Tea4U',
     footerTitle: 'Community Teas',
-    teaTypes: ['Green', 'Black', 'Oolong', 'Tisanes'],
+    teaTypes: ['Green', 'Black', 'Oolong', 'Rooibos', 'Sencha', 'Tisane', 'Yerba'],
     Teas: [
         {name: 'Rooibos Vanilla', type: 'Tisanes', subtype: 'Rooibos', cost_100g: 15, cost_200g: 25, description: 'Classic Rooibos with orange'},
         {name: 'Rooibos Honeybush', type: 'Tisanes', subtype: 'Rooibos', cost_100g: 15, cost_200g: 25},
