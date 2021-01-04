@@ -26,6 +26,7 @@
                     b.subtotal ${{ subtotal(item.cost, item.qty) }}
               v-row.justify-space-between.align-center.total 
                 h4.subtotal Sub-total: ${{ Number((items.subtotal).toFixed(2)) }}
+                v-btn.btn-primary(@click='clearModal=true') Clear Cart
               h3 Delivery Information:
               v-row.justify-space-around
                 h4 {{customer.address || 'unknown address'}}
@@ -37,11 +38,8 @@
               h3.subtotal Delivery Cost: ${{deliveryCost}}
               v-row.justify-space-between.align-center.total 
                 h4.highlight Total: ${{ Number((items.total).toFixed(2)) }}
-                //- form.right(action="/process-payment" method="POST")
-                v-btn.btn-primary.right(:disabled="!items") Checkout
-                  //- stripe-checkout(stripe-key="my-stripe-key" product="product(tea.name, tea.description, tea.price100g)")
-              hr
               Checkout()
+              
             div(v-else)
               h3 Nothing in Cart
               hr
@@ -49,13 +47,8 @@
               v-row.justify-space-around
                 h4 {{customer.address || 'unknown address'}}
                 v-btn(@click='customerInfo=true') Update my information 
-    //- hr
-    //- h5(v-for='content in contents') {{content}}
-    //- form(action="/process-payment" method="POST")
-    //-   button.btn.btn-primary(:disabled="!items") Checkout
-    //-   stripe-checkout(stripe-key="my-stripe-key" product="product(tea.name, tea.description, tea.price100g)")
 
-    v-dialog(v-model='customerInfo')
+    v-dialog(v-model='customerInfo' width='500')
       v-card(max-width='600px')
         v-card-title.header
           h3 Customer Information
@@ -64,15 +57,28 @@
           v-text-field(v-model='customer.address' label='Address')
           v-text-field(v-model='customer.email' label='Email')
           v-text-field(v-model='customer.phone' label = 'Phone')
+          v-row.justify-space-around
+            v-btn(@click='updateInfo') Update
+            v-btn(@click='clearDialog') Cancel        
+    v-dialog(v-model='clearModal' width='600px')
+      v-card()
+        v-card-text
+          h3 Are you sure you want to clear the contents of the cart ?
+          v-row.justify-space-around
+            v-btn.btn-primary(@click='confirmClear()') Yes
+            v-btn(@click='clearDialog') Cancel        
+
 </template>
 
 <script>
-import Checkout from '@/components/Checkout'
+import Checkout from '@/components/ManualCheckout'
+import stripe from 'stripe'
 // import { StripeCheckout } from 'vue-stripe-checkout'
 
 export default {
   name: 'hello',
   components: {
+    // StripeCheckout,
     Checkout
   },
   data () {
@@ -84,7 +90,9 @@ export default {
       deliveryCost: 5,
       mailCost: 15,
       customer: {},
-      customerInfo: false
+      customerInfo: false,
+
+      clearModal: false
     }
   },
   props: {
@@ -147,6 +155,55 @@ export default {
       }
 
       return Number((cost * qty).toFixed(2))
+    },
+    updateInfo () {
+      console.log('update form info... TBD')
+    },
+    clearDialog() {
+      this.closeCart()
+      this.clearModal = false
+    },
+    confirmClear () {
+      this.$store.dispatch('clearCart')
+      this.clearModal = false
+    },
+    checkout () {
+      console.log('checkout ...')
+
+      stripe
+        .redirectToCheckout({
+          lineItems: [
+            // Replace with the ID of your price
+            {price: 'price_123', quantity: 1},
+          ],
+          mode: 'payment',
+          successUrl: 'https://google.com',
+          cancelUrl: 'https://cbc.com',
+        })
+        .then(function(result) {
+          console.log('r: ' + JSON.stringify(result))
+          // If `redirectToCheckout` fails due to a browser or network
+          // error, display the localized error message to your customer
+          // using `result.error.message`.
+        })
+        .catch (err => {
+          console.log('err: ' + err.message)
+        });
+
+      // var config = {
+      //   data-key: 'abc',
+      //   data-amount: '5',
+      //   data-currency: 'cad',
+      //   data-locale: 'auto'
+      // }
+      // axios.post('//checkout.stripe.com/v2/checkout.js', config)
+      // .then (response => {
+      //   console.log("stripe response: " + JSON.stringify(response))
+      // })
+      // .catch (err => {
+      //   console.log("stripe err: " + err.message)
+      // })
+
     }
   }
 }
@@ -165,7 +222,7 @@ export default {
 }
 .total {
   border: 1px solid black;
-  padding: 1rem;
+  padding: 0.25rem;
   background-color: #eee;
 }
 .highlight {

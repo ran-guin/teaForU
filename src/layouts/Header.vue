@@ -50,7 +50,7 @@
       page: { type: String }
     },
     created (){
-      console.log('init header')
+      console.log('init header ' + this.page)
       if (this.page) { this.Htab = this.page }
     },
     methods: {
@@ -64,6 +64,8 @@
         this.firebaseLogout()
         .then (response => {
           console.log('logged out ' + JSON.stringify(response))
+          this.$router.replace('Public')
+
         })
         .catch (err => {
           console.log('err: ' + err.message)

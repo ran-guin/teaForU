@@ -16,6 +16,7 @@
     methods: {
       firebaseLogout () {
         console.log('logout via mixin')
+        this.$store.dispatch('clearCart')
         return firebase.auth().signOut()
       },
       async getTea (filter) {
@@ -36,7 +37,8 @@
 
         var Teas = []
         found.forEach(doc => {
-          console.log(doc.id + ' name: ' + doc.data().name)  
+          console.log(doc.id + ' name: ' + doc.data().name)
+          console.log(doc.data())
           Teas.push(doc.data())
           Teas[Teas.length-1].id = doc.id
         });
@@ -48,7 +50,7 @@
         var db = firebase.firestore()
         var teas = db.collection('teas')
         
-        console.log('add: ' + JSON.stringify(form))
+        console.log('add to database: ' + JSON.stringify(form))
         var added = teas.add(form)
         
         return Promise.resolve(added)
