@@ -7,9 +7,18 @@
       v-flex(lg6)
         v-card.coloured(width='300px')
           v-card-text
-            h3.light My Profile
-            h3.light My Favourites
-            h3.light My Order History
+            a(@click='goto("profile")')
+              h3.light My Profile
+            a(@click='goto("favourites")')
+              h3.light My Favourites
+            a(@click='goto("history")')
+              h3.light My Order History
+    v-dialog(v-model='profile' width='600px')
+      Profile
+    v-dialog(v-model='favourites' width='600px')
+      Favourites
+    v-dialog(v-model='history' width='600px')
+      History
   </template>
 
 <script>
@@ -19,6 +28,11 @@ import Quotes from '@/components/Quotes.vue'
 import Images from '@/components/Images.vue'
 import Shared from '@/mixins/Shared.vue'
 
+import Profile from '@/components/Profile.vue'
+import Favourites from '@/components/Favourites.vue'
+import History from '@/components/History.vue'
+
+
 // import config from '@/config'
 
 export default {
@@ -26,7 +40,10 @@ export default {
   components: {
     PageLayout,
     Quotes,
-    Images
+    Images,
+    Profile,
+    Favourites,
+    History
   },
   mixins: [
     Shared
@@ -38,7 +55,11 @@ export default {
 
       index: 0,
       images: ['leaves.jpg', 'pour2.webp', 'socks.webp', 'steep.webp'],
-      credits: ['Koko Rahmadie from Pexels', 'NIKOLAY OSMACHKO from Pexels', 'Pixabay', 'Julia Sakelli from Pexels']
+      credits: ['Koko Rahmadie from Pexels', 'NIKOLAY OSMACHKO from Pexels', 'Pixabay', 'Julia Sakelli from Pexels'],
+    
+      profile: false,
+      favourites: false,
+      history: false
     }
   },
   created () {
@@ -52,6 +73,15 @@ export default {
     }
   },
   methods: {
+    clear () {
+      this.profile = false
+      this.favourites = false
+      this.history = false
+    },
+    goto (page) {
+      this.clear()
+      this[page] = true
+    }
   }
 }
 </script>

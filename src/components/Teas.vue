@@ -18,16 +18,23 @@
           v-chip(v-if='item.caffeine_free' color='brown' dark) CF
           v-chip(v-if='item.flavoured' color='orange' dark) F
           v-chip(v-if='item.organic' color='green' dark) O
-      //-   v-icon(v-if='item.flavoured' color='red') mdi-check
-      //-   v-icon(v-if='item.organic' color='red') mdi-check
+      template(v-if='isAdmin()' v-slot:item.actions="{ item }")
+        v-icon.mr-2(small @click="editMe(item)") mdi-pencil
+        v-icon.mr-2(small @click="deleteMe(item)") mdi-delete
+    v-dialog(v-model='edit' width='800')
+      EditTeas(:tea='editItem')
 </template>
 <script>
   import Shared from '@/mixins/Shared'
+  import EditTeas from '@/components/EditTeas'
 
   export default {
     mixins: [
       Shared
     ],
+    components: {
+      EditTeas
+    },
     data () {
       return {
           selectable: true,
@@ -35,6 +42,9 @@
           Teas: [],
           showTeas: [],
           preloaded: false,
+
+          edit: false,
+          editItem: {name: 'preset'},
 
           headers: [
             {
@@ -62,11 +72,11 @@
         onSelect: { type: Function }
     },
     async created () {
-
-      if (this.currentUser && this.currentUser.email === 'ran.guin@gmail.com') {
+      if (this.isAdmin()) {
         this.headers.push({ text: 'Type', value: 'type' })
         this.headers.push({ text: 'Code', value: 'code' })
         this.headers.push({ text: 'Location', value: 'location' })
+        this.headers.push({ text: 'actions', value: 'actions' })
       }
       console.log('load ' + this.category + ' Teas ...')
       this.selected = this.allSelected
@@ -125,6 +135,13 @@
             console.log('removed ' + JSON.stringify(removed))
             this.$store.dispatch('removeFromCart', removed[0].name)
           }
+        },
+        editMe (item) {
+          this.edit = true
+          this.editItem = item
+        },
+        deleteMe (item) {
+          console.log('delete: ' + JSON.stringify(item))
         }
     },
     computed: {

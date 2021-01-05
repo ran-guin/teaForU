@@ -11,6 +11,7 @@
               table.table(style='background-color: white')
                 thead
                   tr
+                    th
                     th.narrow Qty
                     th.wide Name
                     th.narrow Unit Price
@@ -18,7 +19,14 @@
                     th.midSize Cost
                 tr(v-for="item, key in contents")
                   td.centred
-                    input(type='number' size=5 v-model='item.qty')
+                    //- v-row.justify-space-around
+                    //- span
+                    v-btn(@click='plus(item.id)' x-small icon color='green')
+                      v-icon(xs) mdi-plus
+                    v-btn(@click='minus(item.name)' icon x-small color='orange')
+                      v-icon mdi-minus
+                  td.centred
+                      span {{item.qty}}
                   td {{item.name}}
                   td.centred(text-align='center') {{item.cost}}
                   td.centred(v-if='sizes') {{item.size}}
@@ -38,7 +46,7 @@
               h3.subtotal Delivery Cost: ${{deliveryCost}}
               v-row.justify-space-between.align-center.total 
                 h4.highlight Total: ${{ Number((items.total).toFixed(2)) }}
-              Checkout()
+              Checkout(:items='contents' :deliveryMode='deliveryMode')
               
             div(v-else)
               h3 Nothing in Cart
@@ -133,6 +141,12 @@ export default {
     }
   },
   methods: {
+    plus (id) {
+      this.$store.dispatch('increaseQtyInCart', id)
+    },
+    minus (id) {
+      this.$store.dispatch('reduceQtyInCart', id)
+    },
     openCart () {
       this.showCart = true
     },

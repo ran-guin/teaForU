@@ -38,6 +38,24 @@ const mutations = {
     if (index >=0) {
       state.Cart.splice(index, 1)
     }
+  },
+  increaseQtyInCart (state, id) {
+    for (var i = 0; i < state.Cart.length; i++) {
+      if (state.Cart[i].id === id || state.Cart[i].name === id) {
+        state.Cart[i].qty++
+        i = state.Cart.length
+      }
+    }
+  },
+  reduceQtyInCart (state, id) {
+    for (var i = 0; i < state.Cart.length; i++) {
+      if (state.Cart[i].id === id || state.Cart[i].name === id) {
+        if (state.Cart[i].qty) {
+          state.Cart[i].qty--
+        }
+        i = state.Cart.length
+      }
+    }
   }
 }
 
@@ -47,6 +65,12 @@ const actions = {
   },
   addToCart (state, item) {
     state.commit('addToCart', item)
+  },
+  increaseQtyInCart (state, item) {
+    state.commit('increaseQtyInCart', item)
+  },
+  reduceQtyInCart (state, item) {
+    state.commit('reduceQtyInCart', item)
   },
   removeFromCart (state, item) {
     state.commit('removeFromCart', item)

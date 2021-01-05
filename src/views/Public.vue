@@ -37,6 +37,11 @@ export default {
       start: false,
     }
   },
+  created () {
+    if (this.loggedIn) {
+      this.$router.replace('Home')
+    }
+  },
   computed: {
     padding () {
       return "padding: " + this.$vuetify.breakpoint.width / 30 + "px;"
