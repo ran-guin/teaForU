@@ -20,7 +20,7 @@
         return firebase.auth().signOut()
       },
       isAdmin () {
-        if (this.currentUser && this.currentUser.email.match('guin@') {
+        if (this.currentUser && this.currentUser.email.match('guin@')) {
           return true
         } else {
           return false
