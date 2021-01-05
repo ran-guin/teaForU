@@ -22,7 +22,7 @@
         v-icon.mr-2(small @click="editMe(item)") mdi-pencil
         v-icon.mr-2(small @click="deleteMe(item)") mdi-delete
     v-dialog(v-model='edit' width='800')
-      EditTeas(:tea='editItem')
+      EditTeas(:tea='editItem' :onCancel='clearDialog')
 </template>
 <script>
   import Shared from '@/mixins/Shared'
@@ -75,7 +75,7 @@
       if (this.isAdmin()) {
         this.headers.push({ text: 'Type', value: 'type' })
         this.headers.push({ text: 'Code', value: 'code' })
-        this.headers.push({ text: 'Location', value: 'location' })
+        this.headers.push({ text: 'Shelf', value: 'shelf' })
         this.headers.push({ text: 'actions', value: 'actions' })
       }
       console.log('load ' + this.category + ' Teas ...')
@@ -142,6 +142,9 @@
         },
         deleteMe (item) {
           console.log('delete: ' + JSON.stringify(item))
+        },
+        clearDialog () {
+          this.edit = false
         }
     },
     computed: {

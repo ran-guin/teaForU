@@ -10,7 +10,7 @@
         v-row.justify-space-around
           v-btn.btn-primary(@click='updateMe()') Update
           v-btn.btn-danger(@click='deleteMe()') Delete
-          v-btn(@click='update') Cancel
+          v-btn(@click='update' @click='onCancel') Cancel
           
 </template>
 <script>
@@ -26,6 +26,7 @@
     },
     props: {
         tea: { type: Object }
+        onCancel: { type: Function }
     },
     async created () {
     },
