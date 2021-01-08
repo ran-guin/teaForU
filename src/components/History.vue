@@ -24,6 +24,9 @@
         orders: []
       }
     },
+    props: {
+      onCancel: { type: Function }
+    },
     async created () {
       this.orders = await this.getOrder({user: this.loggedIn})
     },

@@ -100,7 +100,24 @@
         var added = orders.add(form)
         
         return Promise.resolve(added)
-      }
+      },
+      async teaFavourites () {
+        var db = firebase.firestore()
+        var query = db.collection('favourites')
+
+        if (this.loggedIn) {
+          query = query.where('user', '==', this.loggedIn)
+        
+          var found = await query.get()
+          console.log(found)
+        
+          if (found.length) {
+            console.log('Favourites: ' + found.teas)
+            return found.teas
+          }
+        }
+        return []
+      },
     }
    
   }

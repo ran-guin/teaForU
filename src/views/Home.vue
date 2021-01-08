@@ -6,6 +6,8 @@
 
       v-flex(lg6)
         v-card.coloured(width='300px')
+          v-card-title.cardHeader
+            h4 {{currentUser.displayName}}
           v-card-text
             a(@click='goto("profile")')
               h3.light My Profile
@@ -13,12 +15,13 @@
               h3.light My Favourites
             a(@click='goto("history")')
               h3.light My Order History
+            
     v-dialog(v-model='profile' width='600px')
-      Profile
+      Profile(:onCancel='cancel')
     v-dialog(v-model='favourites' width='600px')
-      Favourites
+      Favourites(:onCancel='cancel')
     v-dialog(v-model='history' width='600px')
-      History
+      History(:onCancel='cancel')
   </template>
 
 <script>
@@ -81,6 +84,11 @@ export default {
     goto (page) {
       this.clear()
       this[page] = true
+    },
+    cancel () {
+      this.favourites = false
+      this.profile = false
+      this.history = false
     }
   }
 }

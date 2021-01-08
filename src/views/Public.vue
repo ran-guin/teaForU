@@ -39,7 +39,7 @@ export default {
   },
   created () {
     if (this.loggedIn) {
-      this.$router.replace('Home')
+      this.$router.replace('Teas')
     }
   },
   computed: {

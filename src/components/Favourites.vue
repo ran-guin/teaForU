@@ -12,6 +12,9 @@
   export default {
     data () {
       return {}
+    },
+    props: {
+      onCancel: { type: Function }
     }
   }
 </script>

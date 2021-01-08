@@ -7,7 +7,8 @@
 export default {
   data () {
     return {
-      delay: 8000,
+      delay: 6000,
+      transition: 3000,
       visible: 1,
       imageIndex: 0,
       onPage: false,
@@ -44,7 +45,7 @@ export default {
           this.nextImage()
           this.fadeInOut()
         }
-      }, this.delay)
+      }, this.delay + this.transition + 500)
     },
     nextImage () {
       this.fade(0)
@@ -58,7 +59,7 @@ export default {
         setTimeout( () => {
           this.fade(1)
         }, 500)
-      }, 2500)
+      }, this.transition)
     }
   },
   watch: {

@@ -38,10 +38,18 @@
             a(@click='recover') I forgot my password
             br
             a(@click='newUser=true') Register for new account
+          //- hr
+          //- h3 Login via FB:
+          //- hr
+          //- div#firebaseui-auth-container
+          //- div#loader Loading...
+
 </template>
 
 <script>
   import firebase from 'firebase'
+  // import firebaseui from 'firebaseui'
+
   // import * as firebase from 'firebase/app'
   // import 'firebase/auth'
   import rules from '@/rules'
@@ -114,14 +122,26 @@
         }
       },
       async login () {
+        // console.log('use firebase ui...')
+        // var ui = new firebaseui.auth.AuthUI(firebase.auth());
+        // var uiConfig = {
+        //   signInOptions: [
+        //     {
+        //       provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+        //       requireDisplayName: false
+        //     }
+        //   ]
+        // }
+        // ui.start('#firebaseui-auth-container', uiConfig);
+        
         await this.validate()
         if (this.validated) {
           this.message = 'signing in...'
           firebase.auth().signInWithEmailAndPassword(this.loginForm.name, this.loginForm.password)
           .then ( user => {
             this.message = 'Signed in Successfully !'
-            console.log('Created user: ' + JSON.stringify(user))
-            this.$router.replace('Home')
+            console.log('Signed in user: ' + JSON.stringify(user))
+            this.$router.replace('Teas')
           })
           .catch ( err => {
             console.log('Error signing in: ' + err.message)

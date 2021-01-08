@@ -13,11 +13,16 @@
         span - Organic
 
     v-data-table(:headers='headers' :items='showTeas' :show-select='selectable' v-model='selected' item-key='name')
-      template(v-slot:item.options = "{ item }")
+      template(v-slot:item.options="{ item }")
         v-row.justify-space-around
           v-chip(v-if='item.caffeine_free' color='brown' dark) CF
           v-chip(v-if='item.flavoured' color='orange' dark) F
           v-chip(v-if='item.organic' color='green' dark) O
+      //- template(v-if='isAdmin()' v-slot:item.favourites="{ item }")
+      //-   //- v-icon.mr-2(small @click="deleteMe(item)") mdi-delete
+      //-   v-icon.mr-2(v-if='item.favourite' small color='red') mdi-cards-heart
+      //-   v-icon.mr-2(v-if='item.favourite' small @click="removeFave(item)") mdi-minus
+      //-   v-icon.mr-2(v-else small @click="addFave(item)") mdi-plus
       template(v-if='isAdmin()' v-slot:item.actions="{ item }")
         v-icon.mr-2(small @click="editMe(item)") mdi-pencil
         v-icon.mr-2(small @click="deleteMe(item)") mdi-delete
@@ -53,16 +58,8 @@
                 sortable: true,
                 value: 'name',
             },
-            // { text: 'Category', value: 'category' },
-            // { text: 'Type', value: 'type' },
             { text: 'Price (100g)', value: 'cost_100g' },
-            // { text: 'Price (100g)', value: 'Price (100g)' },
-            // { text: 'Location'},
-            // { text: 'Cost (100g)', value: 'cost_100g' },
-            // { text: 'Cost (200g)', value: 'cost_200g' },
-            // { text: 'caffeine-free', value: 'caffeine_free' },
-            // { text: 'flavoured', value: 'caffeine_free' },
-            // { text: 'organic', value: 'caffeine_free' },
+           
             { text: 'options', value: 'options' },
           ]
       }
@@ -77,6 +74,10 @@
         this.headers.push({ text: 'Code', value: 'code' })
         this.headers.push({ text: 'Shelf', value: 'shelf' })
         this.headers.push({ text: 'actions', value: 'actions' })
+        // this.headers.push({ text: 'favourites', value: 'favourites' })
+      }
+      else {
+        // this.headers.push({text: 'Favourites', value: 'favourite'})
       }
       console.log('load ' + this.category + ' Teas ...')
       this.selected = this.allSelected
@@ -145,6 +146,12 @@
         },
         clearDialog () {
           this.edit = false
+        },
+        addFave () {
+
+        },
+        removeFave () {
+          
         }
     },
     computed: {
@@ -165,5 +172,8 @@
 <style scoped>
 .v-chip {
   padding-left: 1rem;
+}
+.heart {
+  color: red;
 }
 </style>

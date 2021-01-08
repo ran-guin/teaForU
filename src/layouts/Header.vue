@@ -8,9 +8,9 @@
           span
             v-tabs(centered dark background-color="brown" v-model='Htab' width='100%')
               v-tabs-slider()
-              v-tab(href='#Home')
-                router-link(to='/Home')
-                  v-icon.dark mdi-home
+              //- v-tab(href='#Home')
+              //-   router-link(to='/Home')
+              //-     v-icon.dark mdi-home
               v-tab(v-for='page,i in pages' :key='i' :href='"#" + page' @click='visit(i)') {{page}}
               v-tab(href='#Cart')
                 router-link(to='/Cart')
@@ -18,7 +18,7 @@
           span
             v-btn.btn-primary(v-if='loggedIn' @click='logout()').right Logout
             v-btn.btn-primary(v-else @click='showLogin=true').right Login
-            b.right.padded(v-if='loggedIn') {{currentUser.email}}
+            b.right.padded(v-if='loggedIn') {{currentUser.displayName || currentUser.email}}
     v-dialog(v-model='showLogin' max-width='600px')
       Login(:onClose='closeDialog')
 </template>
@@ -65,7 +65,6 @@
         .then (response => {
           console.log('logged out ' + JSON.stringify(response))
           this.$router.replace('Public')
-
         })
         .catch (err => {
           console.log('err: ' + err.message)
