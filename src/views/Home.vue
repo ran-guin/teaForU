@@ -7,7 +7,7 @@
       v-flex(lg6)
         v-card.coloured(width='300px')
           v-card-title.cardHeader
-            h4 {{currentUser.displayName}}
+            h4(v-if='currentUser') {{currentUser.displayName}}
           v-card-text
             a(@click='goto("profile")')
               h3.light My Profile
@@ -73,6 +73,9 @@ export default {
   computed: {
     padding () {
       return "padding: " + this.$vuetify.breakpoint.width / 30 + "px;"
+    },
+    currentUser () {
+      return this.$store.state.user
     }
   },
   methods: {

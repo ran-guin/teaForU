@@ -38,9 +38,9 @@ export default {
     }
   },
   created () {
-    if (this.loggedIn) {
-      this.$router.replace('Teas')
-    }
+    // if (this.loggedIn) {
+    //   this.$router.replace('Teas')
+    // }
   },
   computed: {
     padding () {

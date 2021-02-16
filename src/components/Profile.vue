@@ -4,7 +4,6 @@
       h2 Profile
     v-card-text
       v-container.padded
-        //- h3 Email: {{currentUser.email}}
         v-text-field(v-for='label, key in show' v-model='form[key]' :label='label' :disabled='disable(label)')
       h3.message(v-if='message') {{message}}
       h3.error(v-if='error') {{error}}
@@ -47,6 +46,9 @@
       this.error = ''
     },
     computed: {
+      currentUser () {
+        return this.$store.state.user
+      },
       keys () {
         return Object.keys(this.show)
       }
