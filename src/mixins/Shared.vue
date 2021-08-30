@@ -7,7 +7,9 @@
     },
     computed: {
       currentUser () {
-        return firebase.auth().currentUser || {}
+        // return firebase.auth().currentUser || {}
+        return this.$store.state.user
+        // return {}
       },
       loggedIn () {
         return this.currentUser.uid
@@ -17,12 +19,15 @@
       firebaseLogout () {
         console.log('logout via mixin')
         this.$store.dispatch('clearCart')
+        this.$store.dispatch('LOGOUT')
         return firebase.auth().signOut()
       },
       isAdmin () {
         if (this.currentUser && this.currentUser.email && this.currentUser.email.match('guin@')) {
+          console.log('recognized admin')
           return true
         } else {
+          console.log('not admin')
           return false
         }
       },
@@ -43,12 +48,12 @@
           }
         }
         var found = await query.get()
-        console.log(found)
+        // console.log(found)
 
         var Teas = []
         found.forEach(doc => {
-          console.log(doc.id + ' name: ' + doc.data().name)
-          console.log(doc.data())
+          // console.log(doc.id + ' name: ' + doc.data().name)
+          // console.log(doc.data())
           Teas.push(doc.data())
           Teas[Teas.length-1].id = doc.id
         });

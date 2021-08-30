@@ -11,8 +11,11 @@
       span
         v-chip(color='green' dark) O
         span - Organic
-
-    v-data-table(:headers='headers' :items='showTeas' :show-select='selectable' v-model='selected' item-key='name')
+    hr
+    b {{list.length}} teas:
+    v-data-table(:headers='headers' :items='list' :show-select='selectable' v-model='selected' item-key='name')
+      template(v-if='filter' slot="no-data")
+        v-alert(:value="true" icon="warning") Sorry, no {{category}} teas matching "{{filter}}"
       template(v-slot:item.options="{ item }")
         v-row.justify-space-around
           v-chip(v-if='item.caffeine_free' color='brown' dark) CF
@@ -31,7 +34,8 @@
 </template>
 <script>
   import Shared from '@/mixins/Shared'
-  import EditTeas from '@/components/EditTeas'
+  // import EditTeas from '@/components/EditTeas'
+  const EditTeas = () => import('@/components/EditTeas')
 
   export default {
     mixins: [
@@ -45,7 +49,7 @@
           selectable: true,
           selected: [],
           Teas: [],
-          showTeas: [],
+          // showTeas: [],
           preloaded: false,
 
           edit: false,
@@ -66,7 +70,10 @@
     },
     props: {
         category: { type: String },
-        onSelect: { type: Function }
+        onSelect: { type: Function },
+        filter: { type: String },
+        list: { type: Array, default: () => { return [] }},
+        count: { type: Number, default: 0 }
     },
     async created () {
       if (this.isAdmin()) {
@@ -82,18 +89,32 @@
       console.log('load ' + this.category + ' Teas ...')
       this.selected = this.allSelected
       console.log("(pre)-Selected: " + JSON.stringify(this.allSelected))
-      this.reloadList()
+      console.log('LIST:  ' + this.list.length)
+      // this.reloadList()
     },
     methods: {
-        async reloadList () {
-            if (this.category) {
-                this.showTeas = await this.getTea({category: this.category})
-                // this.Teas.filter(a => { return (a.category === this.category) })
-                console.log('filtered tea list to ' + this.showTeas.length)
-            } else {
-                this.showTeas = this.Teas
-            }
-        },
+        // async reloadList () {
+        //     // if (this.category) {
+        //     //     this.showTeas = await this.getTea({category: this.category})
+        //     //     // this.Teas.filter(a => { return (a.category === this.category) })
+        //     //     console.log('filtered tea list to ' + this.showTeas.length)
+        //     // } else {
+        //     //     this.showTeas = this.Teas
+        //     // }
+
+        //     if (this.filter) {
+        //       console.log("filter on " + this.filter)
+        //       this.showTeas = this.list.filter(a => {
+        //         var test = new RegExp (this.filter, 'i')
+        //         if (a.description.match(test) || a.name.match(test)) {
+        //           return true
+        //         } else {
+        //           return false
+        //         }
+        //       })
+        //       console.log(JSON.stringify(this.showTeas))
+        //     }
+        // },
         adjusted (items) {
           var list = []
           for (var i = 0; i < items.length; i++) {
@@ -155,17 +176,24 @@
         }
     },
     computed: {
+      noData () {
+        if (this.filter) {
+          return 'Nothing matching "' + this.filter + '"'
+        } else {
+          return 'Nottin'
+        }
+      },
       allSelected () {
         return this.$store.getters.contentsOfCart || []
       }
     },
     watch: {
-        category () {
-            this.reloadList()
-        },
-        selected () {
-          this.updateCart()
-        }
+      list () {
+        console.log('updated LIST ' + JSON.stringify(this.list))
+      },
+      count () {
+        console.log('number changed...')
+      }
     }
   }
 </script>

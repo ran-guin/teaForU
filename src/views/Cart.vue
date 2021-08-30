@@ -6,7 +6,9 @@
 <script>
 // @ is an alias to /src
 import PageLayout from '@/layouts/PageLayout.vue'
-import Cart from '@/components/Cart.vue'
+// import Cart from '@/components/Cart.vue'
+const Cart = () => import('@/components/Cart')
+
 import Shared from '@/mixins/Shared.vue'
 
 // import config from '@/config'

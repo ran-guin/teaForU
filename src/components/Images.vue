@@ -1,5 +1,5 @@
 <template lang='pug'>
-  img.fullBody#fadeID.fadeElement(:src='image')
+  img.fullBody#fadeID.fadeElement(:src='image' style='min-height: 800px')
 </template>
 
 <script>

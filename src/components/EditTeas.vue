@@ -13,7 +13,7 @@
         v-row.justify-space-around
           v-btn.btn-primary(@click='updateMe()' :disabled='disableUpdate') Update
           v-btn.btn-danger(@click='deleteMe()') Delete
-          v-btn(@click='onCancel') Cancel
+          v-btn(@click='cancel') Cancel
           
 </template>
 <script>
@@ -36,7 +36,7 @@
         onCancel: { type: Function }
     },
     async created () {
-      this.original = JSON.parse(JSON.stringify(this.tea)) || {}
+      // this.original = JSON.parse(JSON.stringify(this.tea)) || {}
       console.log('original values: ' + JSON.stringify(this.original))
     },
     methods: {
@@ -78,7 +78,7 @@
 
           if (changes.length) {
             this.updateTea(this.original.id, updates)
-            this.original = JSON.parse(JSON.stringify(this.tea)) || {}
+            // this.original = JSON.parse(JSON.stringify(this.tea)) || {}
             this.$set(this, 'changed', {})
           } else {
             console.log('nothing to update')
@@ -95,6 +95,10 @@
           } else {
             return false
           }
+        },
+        cancel () {
+          this.$set(this, 'changed', {})
+          if (this.onCancel) { this.onCancel() }
         }
     },
     watch: {

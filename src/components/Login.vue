@@ -138,10 +138,27 @@
         if (this.validated) {
           this.message = 'signing in...'
           firebase.auth().signInWithEmailAndPassword(this.loginForm.name, this.loginForm.password)
-          .then ( user => {
+          .then ( response => {
             this.message = 'Signed in Successfully !'
-            console.log('Signed in user: ' + JSON.stringify(user))
-            this.$router.replace('Teas')
+
+            if (response.user) {
+              var access = 'normal'
+              if (response.user.email.match(/[._]guin@/)) { access = 'admin' }
+
+              var payload = {
+                uid: response.user.uid,
+                displayName: response.user.displayName,
+                email: response.user.email,
+                access: access
+              }
+              console.log('Payload: ' + JSON.stringify(payload))
+              this.$store.dispatch('LOGIN', payload)
+            } else {
+              console.debug('user not found in firebase response (?)')
+              console.debug(JSON.stringify(response))
+            }
+            
+            if (this.onClose) { this.onClose() }
           })
           .catch ( err => {
             console.log('Error signing in: ' + err.message)

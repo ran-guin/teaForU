@@ -15,8 +15,13 @@
 <script>
 // @ is an alias to /src
 import PageLayout from '@/layouts/PageLayout.vue'
-import Images from '@/components/Images.vue'
-import Quotes from '@/components/Quotes.vue'
+
+// import Images from '@/components/Images.vue'
+// import Quotes from '@/components/Quotes.vue'
+const Images = () => import('@/components/Images')
+const Quotes = () => import('@/components/Quotes')
+
+
 import Shared from '@/mixins/Shared.vue'
 
 // import config from '@/config'

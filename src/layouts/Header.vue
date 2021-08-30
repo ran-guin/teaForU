@@ -12,12 +12,14 @@
               //-   router-link(to='/Home')
               //-     v-icon.dark mdi-home
               v-tab(v-for='page,i in pages' :key='i' :href='"#" + page' @click='visit(i)') {{page}}
-              v-tab(href='#Cart')
+              v-tab(v-if='loggedIn' href='#Cart')
                 router-link(to='/Cart')
                   v-icon.dark mdi-cart
           span
             v-btn.btn-primary(v-if='loggedIn' @click='logout()').right Logout
             v-btn.btn-primary(v-else @click='showLogin=true').right Login
+            //- v-btn.btn-primary(@click='logout()').right Logout
+            //- v-btn.btn-primary(@click='showLogin=true').right Login
             b.right.padded(v-if='loggedIn') {{currentUser.displayName || currentUser.email}}
     v-dialog(v-model='showLogin' max-width='600px')
       Login(:onClose='closeDialog')
@@ -64,7 +66,9 @@
         this.firebaseLogout()
         .then (response => {
           console.log('logged out ' + JSON.stringify(response))
-          this.$router.replace('Public')
+          if (this.$route.path !== '/Public') {
+            this.$router.replace('Public')
+          }
         })
         .catch (err => {
           console.log('err: ' + err.message)
