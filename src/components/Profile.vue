@@ -1,21 +1,25 @@
 <template lang='pug'>
-  v-card()
-    v-card-title.cardHeader
-      h2 Profile
-    v-card-text
-      v-container.padded
-        v-text-field(v-for='label, key in show' v-model='form[key]' :label='label' :disabled='disable(label)')
-      h3.message(v-if='message') {{message}}
-      h3.error(v-if='error') {{error}}
-    v-card-actions
-      v-row.justify-space-around
-        v-btn.btn-primary(@click='update') Update
-        v-btn(@click='cancel') Cancel
+  PageLayout(page='Profile')
+    v-container
+      v-card()
+        v-card-title.cardHeader
+          h2 Profile
+        v-card-text
+          v-container.padded
+            v-text-field(v-for='label, key in show' v-model='form[key]' :label='label' :disabled='disable(label)')
+          h3.message(v-if='message') {{message}}
+          h3.error(v-if='error') {{error}}
+        v-card-actions
+          v-row.justify-space-around
+            v-btn.btn-primary(@click='update') Update
+            v-btn(href='/Home') Cancel
 </template>
 <script>
   import Shared from '@/mixins/Shared'
+  import PageLayout from '@/layouts/PageLayout.vue'
 
   export default {
+    components: { PageLayout },
     mixins: [
       Shared
     ],

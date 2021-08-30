@@ -32,7 +32,7 @@ const store = new Vuex.Store({
     },
 
     LOGOUT (state) {
-      state.commit('logout')
+      state.commit('LOGOUT')
     }
   },
 

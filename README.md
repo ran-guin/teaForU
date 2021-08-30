@@ -1,24 +1,14 @@
 # t4u
 
-## Project setup
-```
-npm install
-```
+## Test Code
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+firebase emulators:start ... check localhost:5000
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## Check dist/index.html for title (may need to change from Vue App)
 
-### Lints and fixes files
-```
-npm run lint
-```
+## Deployment
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+firebase deploy --debug
+
+
+

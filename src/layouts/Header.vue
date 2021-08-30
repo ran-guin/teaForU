@@ -2,25 +2,53 @@
   div
     div.padded.fillParentHeight()
       v-row.fillParentHeight.justify-space-between.align-center()
-        v-icon(color='black') mdi-coffee
-        h3.light {{title}}
-        v-row.justify-end
-          span
-            v-tabs(centered dark background-color="brown" v-model='Htab' width='100%')
-              v-tabs-slider()
-              //- v-tab(href='#Home')
-              //-   router-link(to='/Home')
-              //-     v-icon.dark mdi-home
-              v-tab(v-for='page,i in pages' :key='i' :href='"#" + page' @click='visit(i)') {{page}}
-              v-tab(v-if='loggedIn' href='#Cart')
-                router-link(to='/Cart')
-                  v-icon.dark mdi-cart
-          span
-            v-btn.btn-primary(v-if='loggedIn' @click='logout()').right Logout
-            v-btn.btn-primary(v-else @click='showLogin=true').right Login
-            //- v-btn.btn-primary(@click='logout()').right Logout
-            //- v-btn.btn-primary(@click='showLogin=true').right Login
-            b.right.padded(v-if='loggedIn') {{currentUser.displayName || currentUser.email}}
+        div
+          v-row
+            img(v-if='logo' :src='logo' height='50px')
+            v-icon(v-else color='black') mdi-coffee
+            h3.light {{title}}
+        div
+          v-btn(large dark)
+            router-link(to='/Teas' style='color: white; textDecoration: none') Shop for Teas
+        div
+          v-row.justify-end
+            span
+              //- v-tabs(centered dark background-color="brown" v-model='Htab' width='100%')
+                //- v-tabs-slider()
+                //- v-tab(href='#Home')
+                //-   router-link(to='/Home')
+                //-     v-icon.dark mdi-home
+                //- v-tab(v-for='page,i in pages' :key='i' :href='"#" + page' @click='visit(i)') {{page}}
+            v-btn(v-if='loggedIn' href='#Cart' style='margin-right: 2rem')
+              router-link(to='/Cart')
+                v-icon.dark mdi-cart
+            span &nbsp;
+            span
+              div.text-center
+                v-btn(v-if='!loggedIn' @click='showLogin=true') Login
+                v-menu(v-else offset-y dark)
+                  template(v-slot:activator="{on, attrs}")
+                    v-btn(v-bind='attrs' v-on='on')
+                      v-avatar.mr-2(v-if='currentUser.pic' size=30)
+                        img(:src='currentUser.pic')
+                      b(v-else) {{showName}}
+                  v-list(style='background-color: sienna')
+                    v-list-item(v-if='loggedIn' @click='logout()') Logout
+                    //- v-list-item(v-else @click='logout()') Logout
+                    v-list-item(v-if='loggedIn' @click='logout()')
+                      hr(width='100%')
+                    v-list-item(v-for='item in general_menu')
+                        v-list-item-title
+                          a(v-if='item.icon' :href='item.link' style='color: white; ')
+                            v-icon {{item.icon}}
+                          a(v-else :href='item.link' style='color: white; ') {{item.title}}
+                    v-list-item(v-if='loggedIn' @click='logout()')
+                      hr(width='100%')
+                    v-list-item(v-for='item in personal_menu')
+                        v-list-item-title
+                          a(v-if='item.icon' :href='item.link' style='color: white; ')
+                            v-icon {{item.icon}}
+                          a(v-else :href='item.link' style='color: white; ') {{item.title}}
     v-dialog(v-model='showLogin' max-width='600px')
       Login(:onClose='closeDialog')
 </template>
@@ -40,12 +68,23 @@
     ],
     data () {
       return {
-        pages: ['Teas', 'About'],
+        logo: '/assets/images/teacup.png',
+        // pages: ['Teas', 'About'],
+        general_menu: [
+          {title: 'Public', link: '/Public', icon: 'home'},
+          {title: 'About Tea4u', link: '/About'}
+          // {title: 'Teas', link: '/Teas'}
+        ],
+        personal_menu: [
+          {title: 'My Profile', link: '/Profile'},
+          {title: 'My Favourites', link: '/Favourites'},
+          {title: 'My Orders', link: '/Orders'}
+        ],
         showLogin: false,
         Htab: '',
 
         title: config.headerTitle || 'Header',
-        logo: 'T4U.png'
+        // logo: 'T4U.png'
       }
     },
     props: {
@@ -55,7 +94,27 @@
       console.log('init header ' + this.page)
       if (this.page) { this.Htab = this.page }
     },
+    computed: {
+      showName () {
+        if (this.currentUser) {
+          var parse = this.currentUser.displayName ? this.currentUser.displayName.match(/(.+)@/) : this.currentUser.email.match(/(.+)@/)
+          if (parse) { 
+            console.log('parsed: ' + JSON.stringify(parse))
+            return parse[1]
+          } else { return this.currentUser.displayName || '' }
+        } else { return '' }
+      }
+    },
     methods: {
+      getName () {
+        if (this.currentUser) {
+          var parse = this.currentUser.displayName.match(/(.+)@/)
+          if (parse) { 
+            console.log('parsed: ' + JSON.stringify(parse))
+            this.showName = parse[1]
+          } else { this.showName = this.currentUser.displayName || '' }
+        } else { this.showName = '' }
+      },
       launchLogin () {
         this.showLogin = true
       },
