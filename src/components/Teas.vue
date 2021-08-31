@@ -12,7 +12,7 @@
         v-chip(color='green' dark) O
         span - Organic
     hr
-    b {{list.length}} teas:
+    b {{list.length}} teas {{edit}}:
     v-data-table(:headers='headers' :items='list' :show-select='selectable' v-model='selected' item-key='name')
       template(v-if='filter' slot="no-data")
         v-alert(:value="true" icon="warning") Sorry, no {{category}} teas matching "{{filter}}"
@@ -26,15 +26,14 @@
       //-   v-icon.mr-2(v-if='item.favourite' small color='red') mdi-cards-heart
       //-   v-icon.mr-2(v-if='item.favourite' small @click="removeFave(item)") mdi-minus
       //-   v-icon.mr-2(v-else small @click="addFave(item)") mdi-plus
-      template(v-if='isAdmin()' v-slot:item.actions="{ item }")
+      template(v-if='edit' v-slot:item.actions="{ item }")
         v-icon.mr-2(small @click="editMe(item)") mdi-pencil
         v-icon.mr-2(small @click="deleteMe(item)") mdi-delete
-    v-dialog(v-model='edit' width='800')
+    v-dialog(v-model='editBlock' width='800')
       EditTeas(:tea='editItem' :onCancel='clearDialog')
 </template>
 <script>
   import Shared from '@/mixins/Shared'
-  // import EditTeas from '@/components/EditTeas'
   const EditTeas = () => import('@/components/EditTeas')
 
   export default {
@@ -49,13 +48,14 @@
           selectable: true,
           selected: [],
           Teas: [],
-          // showTeas: [],
           preloaded: false,
 
-          edit: false,
+          editBlock: false,
+          // edit: false,
           editItem: {name: 'preset'},
 
-          headers: [
+          headers: [],
+          baseHeaders: [
             {
                 text: 'Name',
                 align: 'start',
@@ -73,19 +73,12 @@
         onSelect: { type: Function },
         filter: { type: String },
         list: { type: Array, default: () => { return [] }},
-        count: { type: Number, default: 0 }
+        count: { type: Number, default: 0 },
+        edit: { type: Boolean, default: false }
     },
     async created () {
-      if (this.isAdmin()) {
-        this.headers.push({ text: 'Type', value: 'type' })
-        this.headers.push({ text: 'Code', value: 'code' })
-        this.headers.push({ text: 'Shelf', value: 'shelf' })
-        this.headers.push({ text: 'actions', value: 'actions' })
-        // this.headers.push({ text: 'favourites', value: 'favourites' })
-      }
-      else {
-        // this.headers.push({text: 'Favourites', value: 'favourite'})
-      }
+      this.loadHeaders()
+
       console.log('load ' + this.category + ' Teas ...')
       this.selected = this.allSelected
       console.log("(pre)-Selected: " + JSON.stringify(this.allSelected))
@@ -93,28 +86,16 @@
       // this.reloadList()
     },
     methods: {
-        // async reloadList () {
-        //     // if (this.category) {
-        //     //     this.showTeas = await this.getTea({category: this.category})
-        //     //     // this.Teas.filter(a => { return (a.category === this.category) })
-        //     //     console.log('filtered tea list to ' + this.showTeas.length)
-        //     // } else {
-        //     //     this.showTeas = this.Teas
-        //     // }
+      loadHeaders () {
+        this.headers = Object.assign([], this.baseHeaders)
 
-        //     if (this.filter) {
-        //       console.log("filter on " + this.filter)
-        //       this.showTeas = this.list.filter(a => {
-        //         var test = new RegExp (this.filter, 'i')
-        //         if (a.description.match(test) || a.name.match(test)) {
-        //           return true
-        //         } else {
-        //           return false
-        //         }
-        //       })
-        //       console.log(JSON.stringify(this.showTeas))
-        //     }
-        // },
+        if (this.edit) {
+          this.headers.push({ text: 'Type', value: 'type' })
+          this.headers.push({ text: 'Code', value: 'code' })
+          this.headers.push({ text: 'Shelf', value: 'shelf' })
+          this.headers.push({ text: 'actions', value: 'actions' })
+        }
+      },
         adjusted (items) {
           var list = []
           for (var i = 0; i < items.length; i++) {
@@ -159,14 +140,14 @@
           }
         },
         editMe (item) {
-          this.edit = true
+          this.editBlock = true
           this.editItem = item
         },
         deleteMe (item) {
           console.log('delete: ' + JSON.stringify(item))
         },
         clearDialog () {
-          this.edit = false
+          this.editBlock = false
         },
         addFave () {
 
@@ -188,6 +169,11 @@
       }
     },
     watch: {
+      edit () {
+        console.log('changed edit mode..')
+        this.loadHeaders()
+        console.log('H: ' + JSON.stringify(this.headers))
+      },
       list () {
         console.log('updated LIST ' + JSON.stringify(this.list))
       },

@@ -2,8 +2,12 @@
   PageLayout(page='Teas')
     v-row
       v-flex(:class="$vuetify.breakpoint.lgAndUp ? 'lg8' : 'lg12'")
-        div.centred(style='padding-left: 5%; width: 500px')
-          v-text-field(v-model='searchFor' prepend-icon='search' placeholder='Search teas..' clearable @input='filter()')
+        v-row.justify-space-between.align-center
+          div(style='padding-left: 5%; width: 500px')
+            v-text-field(v-model='searchFor' prepend-icon='search' placeholder='Search teas..' clearable @input='filter()')
+          div(v-if='isAdmin()' style='padding-right: 5%')
+            v-btn(v-if='editMode' @click='editMode=false') Finished Edits
+            v-btn(v-else @click='editMode=true') Edit Tea Records
         v-row
           v-container
             v-tabs(centered dark background-color="#721" v-model='tab' width='100%')
@@ -17,7 +21,7 @@
                 v-container(:style='padding')
                   v-card(elevation='9')
                     v-card-text
-                      Teas(:category='teaType' :list='Show[teaType]')
+                      Teas(:category='teaType' :list='Show[teaType]' :edit='editMode')
       v-flex(v-if='$vuetify.breakpoint.lgAndUp' lg4)
           Images
   </template>
@@ -58,7 +62,8 @@ export default {
       list: {},
       Cart: {},
       Teas: {},
-      Show: { Green: [], Black: [], OOlong: [], Rooibos: [], Sencha: [], Tisane: [], Yerba: [] }
+      Show: { Green: [], Black: [], OOlong: [], Rooibos: [], Sencha: [], Tisane: [], Yerba: [] },
+      editMode: true,
     }
   },
   created () {
@@ -129,6 +134,9 @@ export default {
       var category = this.teaTypes[this.tabIndex]
       console.log(this.tabIndex + ' switch to ' + category)
       // console.log(category + ' Showing: ' + this.Show[category].length)
+    },
+    editMode () {
+      console.log('changed edit mode')
     }
   }
 }

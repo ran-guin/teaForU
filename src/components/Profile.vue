@@ -1,5 +1,4 @@
 <template lang='pug'>
-  PageLayout(page='Profile')
     v-container
       v-card()
         v-card-title.cardHeader
@@ -12,14 +11,14 @@
         v-card-actions
           v-row.justify-space-around
             v-btn.btn-primary(@click='update') Update
-            v-btn(href='/Home') Cancel
+            v-btn(@click='onCancel') Cancel
 </template>
 <script>
   import Shared from '@/mixins/Shared'
-  import PageLayout from '@/layouts/PageLayout.vue'
+  // import PageLayout from '@/layouts/PageLayout.vue'
 
   export default {
-    components: { PageLayout },
+    // components: { PageLayout },
     mixins: [
       Shared
     ],
@@ -60,7 +59,7 @@
     methods: {
       update () {
         console.log('update user information...' + JSON.stringify(this.form))
-        this.currentUser.updateProfile(this.form)
+        this.updateDB(this.currentUser, this.form)
         .then( () => {
           this.message = 'Updated information...'
           console.log(this.currentUser)

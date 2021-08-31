@@ -31,6 +31,20 @@
           return false
         }
       },
+      async updateDB (user, data) {
+        console.log("update user: " + JSON.stringify(user))
+        console.log('data: ' + JSON.stringify(data))
+
+        // function writeUserData(userId, name, email, imageUrl) {
+        const db = firebase.database();
+        console.log('got uid ' + user.uid)
+        // var ref2 = firebase.ref()
+        db.ref('users/' + user.uid).set({
+          username: data.displayName
+        });
+
+        return Promise.resolve('updated')
+      },
       async getTea (filter) {
         var db = firebase.firestore()
         var teas = db.collection('teas')
