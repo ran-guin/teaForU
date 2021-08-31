@@ -37,11 +37,18 @@
 
         // function writeUserData(userId, name, email, imageUrl) {
         const db = firebase.database();
-        console.log('got uid ' + user.uid)
-        // var ref2 = firebase.ref()
-        db.ref('users/' + user.uid).set({
+
+        const data = {
+          uid: user.uid,
           username: data.displayName
-        });
+        }
+
+        console.log('update user uid ' + user.uid)
+        console.log('data: ' + JSON.stringify(data))
+        // var ref2 = firebase.ref()
+        db.ref('users/' + user.uid)
+        .child(firebase.auth().currentUser.uid)
+        .set(data);
 
         return Promise.resolve('updated')
       },
