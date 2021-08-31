@@ -1,2 +1,2 @@
-sed -i '' 's|<title>Vue App</title>|<title>T4U</title><link rel="icon" href="/assets/images/teacup.svg" />|' dist/index.html
+sed -i '' 's|<title>Vue App</title>|<title>Tea4U</title><link rel="icon" href="/assets/images/teacup.svg" />|' dist/index.html
 

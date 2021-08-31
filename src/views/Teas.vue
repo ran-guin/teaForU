@@ -63,7 +63,7 @@ export default {
       Cart: {},
       Teas: {},
       Show: { Green: [], Black: [], OOlong: [], Rooibos: [], Sencha: [], Tisane: [], Yerba: [] },
-      editMode: true,
+      editMode: false,
     }
   },
   created () {

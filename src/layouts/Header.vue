@@ -141,8 +141,16 @@
       launchLogin () {
         this.showLogin = true
       },
-      closeDialog () {
-        this.showLogin = false
+      closeDialog (delay) {
+        if (delay) {
+          setTimeout( () => {
+            this.showLogin = false
+            this.showRegister = false
+          }, delay)          
+        } else {
+          this.showLogin = false
+          this.showRegister = false
+        }
       },
       logout () {
         this.firebaseLogout()

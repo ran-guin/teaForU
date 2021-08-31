@@ -7,28 +7,29 @@
             v-btn.right(icon @click='onClose')
               v-icon mdi-close
         v-card-text
-          v-form(ref='form')
-            v-text-field(label='Username / Email' v-model='loginForm.name' :rules='Rules.name')
+          v-form(ref='form' v-model='validForm')
+            v-text-field.validate(label='Email' v-model='loginForm.name' :rules='Rules.email')
             //- :prepend-icon='ready ? mdi-home : mdi-close'
-            v-text-field(label='Password' v-model='loginForm.password' 
+            v-text-field.validate(label='Password' v-model='loginForm.password' 
               :append-icon='visiblePwd ? "mdi-eye" : "mdi-eye-off"'
               @click:append='() => (visiblePwd = !visiblePwd)'
               :type='visiblePwd ? "text" : "password"'
               :rules='Rules.password'
               )
+
             div(v-if='newUser')
               v-text-field(label='Confirm Password' v-model='loginForm.confirmPassword' 
                 :append-icon='visiblePwd ? "mdi-eye" : "mdi-eye-off"'
                 @click:append='() => (visiblePwd = !visiblePwd)'
                 :type='visiblePwd ? "text" : "password"'
                 )
-              v-icon(v-if='ready' color=green) mdi-check
+              span(v-if='newUser && !confirmPwd' style='color: red') Passwords must match
 
               v-row.justify-space-around
-              v-btn.btn-primary(:disabled="!ready" @click='register') Register
+              v-btn.btn-primary(:disabled="!validForm || !confirmPwd" @click='register()') Register 
             div(v-else)
               v-row.justify-space-around
-                v-btn.btn-primary(@click='login') Login
+                v-btn.btn-primary(:disabled="!validForm || !confirmPwd"  @click='login()') Log In
           p &nbsp;
           h4.error.fade(v-if='error') {{error}}
           h4.message(v-if='message') {{message}}
@@ -52,7 +53,7 @@
 
   // import * as firebase from 'firebase/app'
   // import 'firebase/auth'
-  import rules from '@/rules'
+  import config from '@/config'
 
   export default {
     data () {
@@ -62,11 +63,12 @@
         visiblePwd: false,
         newUser: false,
 
-        Rules: {},
+        Rules: config.rules,
         validated: false,
 
         message: '',
-        error: ''
+        error: '',
+        validForm: false
       }
     },
     props: {
@@ -78,17 +80,18 @@
     },
     methods: {
       clearForm () {
-        this.login = {
+        this.loginForm = {
           name: '',
           password: ''
         }
       },
       validate () {
-        this.Rules = {
-          name: [rules.required, rules.email],
-          password: [rules.required, rules.min(5)]
-        }
-        
+        console.log("Rules: " + JSON.stringify(this.Rules))
+        // this.Rules = {
+        //   name: [rules.required, rules.email],
+        //   password: [rules.required, rules.min(5)]
+        // }
+        console.log('validate rules...')
         this.$nextTick(() => {
           //manually trigger Vuetify validation
           if(this.$refs.form.validate()) {
@@ -113,6 +116,10 @@
           .then ( user => {
             this.message = 'Registered Successfully !'
             console.log('Created user: ' + user)
+            setTimeout( () => {
+              this.message = ''
+              this.login()
+            }, 1000)
           })
           .catch ( err => {
             console.log('Registration error: ' + err.message)
@@ -122,18 +129,7 @@
         }
       },
       async login () {
-        // console.log('use firebase ui...')
-        // var ui = new firebaseui.auth.AuthUI(firebase.auth());
-        // var uiConfig = {
-        //   signInOptions: [
-        //     {
-        //       provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
-        //       requireDisplayName: false
-        //     }
-        //   ]
-        // }
-        // ui.start('#firebaseui-auth-container', uiConfig);
-        
+        console.log('logging in...')  
         await this.validate()
         if (this.validated) {
           this.message = 'signing in...'
@@ -172,18 +168,16 @@
       }
     },
     computed: {
-        ready () {
-            if (this.loginForm.password.length > 6 && this.loginForm.name.match(/^[\w.+]+@\w+\.\w+$/)) {
-                if (this.new && this.loginForm.password === this.loginForm.confirmPassword) {
-                  return true
-                } else if (!this.new) {
-                  return true
-                } else {
-                  return true
-                }
+        confirmPwd () {
+          if (this.newUser) {
+            if (this.loginForm.password === this.loginForm.confirmPassword) {
+              return true
             } else {
-                return false
+              return false
             }
+          } else {
+            return true
+          }
         }
     },
     watch: {
@@ -197,7 +191,7 @@
       },
       message () {
         console.log('message changed')
-        if (this.error) {
+        if (this.message) {
           setTimeout( () => {
             this.message = ''
             this.clearForm()

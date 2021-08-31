@@ -25,7 +25,11 @@
     data () {
       return {
         form: {},
-        preset: {},
+        preset: {
+          username: '',
+          phone: '',
+          address: ''
+        },
 
         userData: null,
         message: '',
