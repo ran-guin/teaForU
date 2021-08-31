@@ -13,12 +13,6 @@
         div
           v-row.justify-end
             span
-              //- v-tabs(centered dark background-color="brown" v-model='Htab' width='100%')
-                //- v-tabs-slider()
-                //- v-tab(href='#Home')
-                //-   router-link(to='/Home')
-                //-     v-icon.dark mdi-home
-                //- v-tab(v-for='page,i in pages' :key='i' :href='"#" + page' @click='visit(i)') {{page}}
             v-btn(v-if='loggedIn' href='#Cart' style='margin-right: 2rem')
               router-link(to='/Cart')
                 v-icon.dark mdi-cart
@@ -54,7 +48,7 @@
     v-dialog(v-model='showLogin' max-width='600px')
       Login(:onClose='closeDialog')
     v-dialog(v-model='editProfile' max-width='600px')
-      Profile(:onCancel='clearDialog')
+      Profile(:onCancel='clearDialog' :onChange='loadUser')
 </template>
 
 <script>
@@ -74,6 +68,7 @@
     ],
     data () {
       return {
+        user: {},
         logo: '/assets/images/teacup.png',
         // pages: ['Teas', 'About'],
         general_menu: [
@@ -103,10 +98,13 @@
     created (){
       console.log('init header ' + this.page)
       if (this.page) { this.Htab = this.page }
+      this.loadUser()
     },
     computed: {
       showName () {
-        if (this.currentUser) {
+        if (this.user && this.user.username) {
+          return this.user.username
+        } else if (this.currentUser) {
           var parse = this.currentUser.displayName ? this.currentUser.displayName.match(/(.+)@/) : this.currentUser.email.match(/(.+)@/)
           if (parse) { 
             console.log('parsed: ' + JSON.stringify(parse))
@@ -116,6 +114,11 @@
       }
     },
     methods: {
+      async loadUser () {
+        console.log('get user info from ' + JSON.stringify(this.currentUser))
+        this.user = await this.userInfo(this.currentUser.uid)
+        console.log('user: ' + JSON.stringify(this.user))
+      },
       open (page) {
         this.clearDialog()
         console.log('open ' + page)
@@ -170,6 +173,7 @@
       },
       currentUser () {
         console.log('current user changed to ' + this.currentUser)
+        this.loadUser()
       }
     }
   }

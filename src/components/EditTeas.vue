@@ -64,21 +64,21 @@
           console.log('was: ' + JSON.stringify(this.changed))
           console.log('now: ' + JSON.stringify(this.tea))
         },
-        updateMe () {
+        async updateMe () {
           var changes = Object.keys(this.changed)
           console.log('original: ' + JSON.stringify(this.changed))
           console.log('now: ' + JSON.stringify(this.tea) + ' : ' + changes.length)
 
-          var updates = {}
+          var updated = {}
           for (var i = 0; i < changes.length; i++) {
             var field = changes[i]
-            updates[field] = this.tea[field]
-            console.log('track change in ' + field)
+            updated[field] = this.tea[field]
+            console.log('track Change in ' + field)
           }
 
           if (changes.length) {
-            this.updateTea(this.original.id, updates)
-            // this.original = JSON.parse(JSON.stringify(this.tea)) || {}
+            var update = await this.updateTea(this.tea.id, updated)
+            console.log('updated tea: ' + JSON.stringify(update))
             this.$set(this, 'changed', {})
           } else {
             console.log('nothing to update')

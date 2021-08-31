@@ -22,6 +22,51 @@
         this.$store.dispatch('LOGOUT')
         return firebase.auth().signOut()
       },
+
+      /*  *** Generic DB Accessors *** */
+      async getRecord (table, ref, idField) {
+        var db = firebase.firestore()
+        
+        var query = db.collection(table)
+
+        if (idField) {
+          query = query
+            .where(idField, '==', ref)
+            console.log(idField + ' : ' + ref)
+        } else {
+          query = query.doc(ref)
+        }
+
+        var found = await query.get()
+
+        if (found && found.length) {
+          console.log('found: ' + found.length)
+          return Promise.resolve(found[0].data())
+        } else {
+          console.log('nothing found with ' + idField + ' : ' + ref)
+          return Promise.resolve()
+        }
+      },
+      async updateDB (table, ref, data) {
+        var db = firebase.firestore()
+        console.log(table + " update : " + ref)
+        console.log(JSON.stringify(data))
+
+        var record = db.collection(table)
+
+        console.log(table + ' : ' + ref + ' : ' + JSON.stringify(data))
+        
+        if (ref) {
+          var updated = record.doc(ref).update(data)
+          return Promise.resolve(updated)
+        } else {
+          var added = record.set(data)
+          console.log('added: ' + JSON.stringify(added))
+          return Promise.resolve(added)
+        }
+      },
+
+      /*  *** User Accessors *** */
       isAdmin () {
         if (this.currentUser && this.currentUser.email && this.currentUser.email.match('guin@')) {
           console.log('recognized admin')
@@ -31,27 +76,36 @@
           return false
         }
       },
-      async updateDB (user, data) {
-        console.log("update user: " + JSON.stringify(user))
-        console.log('data: ' + JSON.stringify(data))
-
-        // function writeUserData(userId, name, email, imageUrl) {
-        const db = firebase.database();
-
-        const data = {
-          uid: user.uid,
-          username: data.displayName
+      async userInfo (ref) {
+        var db = firebase.firestore()
+        
+        var found = await db.collection('users').doc(ref).get()
+       
+        if (found.exists) {
+          return Promise.resolve(found.data())
+        } else {
+          return Promise.resolve(null)
         }
-
-        console.log('update user uid ' + user.uid)
-        console.log('data: ' + JSON.stringify(data))
-        // var ref2 = firebase.ref()
-        db.ref('users/' + user.uid)
-        .child(firebase.auth().currentUser.uid)
-        .set(data);
-
-        return Promise.resolve('updated')
       },
+      async updateUser (ref, data) {
+        var db = firebase.firestore()
+        console.log('update user : ' + ref + ' : ' + JSON.stringify(data))
+        
+        var updated = await db.collection('users').doc(ref).update(data)
+        return Promise.resolve(updated)
+      },
+      async addUserInfo (ref, data) {
+        var db = firebase.firestore()
+
+        console.log('add user : ' + ref + ' : ' + JSON.stringify(data))
+        
+        // var added = await db.collection('users').doc(ref).set(data)
+        var added = await db.collection('users').doc(ref).set(data)
+        // var added = await db.collection('orders').doc('xyz').set(data)
+        return Promise.resolve(added)
+      },
+  
+      /*  *** Tea Accessors *** */
       async getTea (filter) {
         var db = firebase.firestore()
         var teas = db.collection('teas')
@@ -82,7 +136,7 @@
         console.log(JSON.stringify(Teas))
         return Promise.resolve(Teas)
       },
-      addTea (form) {
+      async addTea (form) {
         var db = firebase.firestore()
         var teas = db.collection('teas')
         
@@ -91,6 +145,16 @@
         
         return Promise.resolve(added)
       },
+      async updateTea (ref, data) {
+        var db = firebase.firestore()
+        var teas = db.collection('teas')
+
+        console.log('update tea: ' + ref + ' : ' + JSON.stringify(data))
+        teas.doc(ref).update(data)
+        
+        return Promise.resolve(data)
+      },
+      /*  *** Order Accessors *** */
       async getOrder (filter) {
         var db = firebase.firestore()
         var query = db.collection('orders')

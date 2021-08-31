@@ -5,7 +5,7 @@
           h2 Profile
         v-card-text
           v-container.padded
-            v-text-field(v-for='label, key in show' v-model='form[key]' :label='label' :disabled='disable(label)')
+            v-text-field(v-for='key, label in preset' v-model='form[label]' :label='label' :disabled='disable(key)')
           h3.message(v-if='message') {{message}}
           h3.error(v-if='error') {{error}}
         v-card-actions
@@ -25,53 +25,72 @@
     data () {
       return {
         form: {},
-        show: {
-          displayName: 'Username',
-          email: 'Email',
-          // emailVerified: 'Verified',
-          // phoneNumber: 'Phone',
-          // Address: 'Address',
-        },
+        preset: {},
+
+        userData: null,
         message: '',
         error: ''
       }
     },
     props: {
-      onCancel: { type: Function }
+      onCancel: { type: Function },
+      onChange: { type: Function }
     },
-    created () {
-      var keys = this.keys
-      for (var i = 0; i < keys.length; i++) {
-        this.$set(this.form, keys[i], this.currentUser[keys[i]])
+    async created () {
+      console.log('User: ' + JSON.stringify(this.currentUser))
+      var user = await this.userInfo(this.currentUser.uid)
+      console.log('Info: ' + JSON.stringify(user))
+
+      if (user) { 
+        this.userData = user
+        var keys = Object.keys(this.userData)
+        for (var i = 0; i < keys.length; i++) {
+          this.$set(this.form, keys[i], this.userData[keys[i]])
+          this.$set(this.preset, keys[i], this.userData[keys[i]] || keys[i])
+        }
       }
-      console.log(JSON.stringify(this.form))
       this.message = ''
       this.error = ''
     },
     computed: {
       currentUser () {
         return this.$store.state.user
-      },
-      keys () {
-        return Object.keys(this.show)
       }
     },
     methods: {
       update () {
         console.log('update user information...' + JSON.stringify(this.form))
-        this.updateDB(this.currentUser, this.form)
-        .then( () => {
-          this.message = 'Updated information...'
-          console.log(this.currentUser)
-          setTimeout( () => {
-            this.message = ''
-            if (this.onCancel) { this.onCancel() }
-          }, 3000)
-        })
-        .catch ( err => {
-          console.log('Error updating information: ' + err.message)
-          this.error = 'Error upating information'
-        })
+
+        console.log('user data: ' + JSON.stringify(this.userData))
+        if (this.userData) {
+          this.updateUser(this.currentUser.uid, this.form)
+          .then( () => {
+            this.message = 'Updated information...'
+            setTimeout( () => {
+              this.message = ''
+              if (this.onCancel) { this.onCancel() }
+            }, 2000)
+          })
+          .catch ( err => {
+            console.log('Error updating information: ' + err.message)
+            this.error = 'Error upating information'
+          })
+        } else {
+          this.addUserInfo(this.currentUser.uid, this.form)
+          .then( () => {
+            this.message = 'Added user information...'
+            setTimeout( () => {
+              this.message = ''
+              if (this.onCancel) { this.onCancel() }
+            }, 2000)
+          })
+          .catch ( err => {
+            console.log('Error updating information: ' + err.message)
+            this.error = 'Error upating information'
+          })
+
+        }
+        if (this.onChange) { this.onChange() }
       },
       verified (label) {
         if (label === 'Email') {

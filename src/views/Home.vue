@@ -10,7 +10,7 @@
             h4(v-if='currentUser') {{currentUser.displayName}}
           v-card-text
             a(@click='goto("profile")')
-              h3.light My Profile
+              h3.light My Own Profile
             a(@click='goto("favourites")')
               h3.light My Favourites
             a(@click='goto("history")')
@@ -27,15 +27,9 @@
 <script>
 // @ is an alias to /src
 import PageLayout from '@/layouts/PageLayout.vue'
-
-// import Quotes from '@/components/Quotes.vue'
-// import Images from '@/components/Images.vue'
 const Quotes = () => import('@/components/Quotes')
 const Images = () => import('@/components/Images')
 
-// import Profile from '@/components/Profile.vue'
-// import Favourites from '@/components/Favourites.vue'
-// import History from '@/components/History.vue'
 const Profile = () => import('@/components/Profile')
 const Favourites = () => import('@/components/Favourites')
 const History = () => import('@/components/History')
