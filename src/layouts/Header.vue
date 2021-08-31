@@ -46,11 +46,15 @@
                       hr(width='100%')
                     v-list-item(v-for='item in personal_menu')
                         v-list-item-title
-                          a(v-if='item.icon' :href='item.link' style='color: white; ')
+                          b(v-if='item.open' @click='open(item.open)' style='color: white; ')
+                            b {{item.title}}
+                          a(v-else-if='item.icon' :href='item.link' style='color: white; ')
                             v-icon {{item.icon}}
                           a(v-else :href='item.link' style='color: white; ') {{item.title}}
     v-dialog(v-model='showLogin' max-width='600px')
       Login(:onClose='closeDialog')
+    v-dialog(v-model='editProfile' max-width='600px')
+      Profile(:onCancel='clearDialog')
 </template>
 
 <script>
@@ -58,10 +62,12 @@
   import Shared from '@/mixins/Shared'
 
   const Login = () => import('@/components/Login')
+  const Profile = () => import('@/components/Profile')
 
   export default {
     components: {
-      Login
+      Login,
+      Profile
     },
     mixins: [
       Shared
@@ -76,11 +82,15 @@
           // {title: 'Teas', link: '/Teas'}
         ],
         personal_menu: [
-          {title: 'My Profile', link: '/Profile'},
+          {title: 'My Profile', link: '/Profile', open: 'editProfile'},
           {title: 'My Favourites', link: '/Favourites'},
           {title: 'My Orders', link: '/Orders'}
         ],
+
         showLogin: false,
+        editProfile: false,
+        
+        
         Htab: '',
 
         title: config.headerTitle || 'Header',
@@ -106,6 +116,16 @@
       }
     },
     methods: {
+      open (page) {
+        this.clearDialog()
+        console.log('open ' + page)
+        this.$set(this, page, true)
+        // this.editProfile = true
+      },
+      clearDialog () {
+        this.editProfile = false
+        this.showLogin = false
+      },
       getName () {
         if (this.currentUser) {
           var parse = this.currentUser.displayName.match(/(.+)@/)
