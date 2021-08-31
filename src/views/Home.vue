@@ -5,23 +5,19 @@
         Images
 
       v-flex(lg6)
-        v-card.coloured(width='300px')
-          v-card-title.cardHeader
-            h4(v-if='currentUser') {{currentUser.displayName}}
-          v-card-text
-            a(@click='goto("profile")')
-              h3.light My Own Profile
-            a(@click='goto("favourites")')
-              h3.light My Favourites
-            a(@click='goto("history")')
-              h3.light My Order History
+        Quotes
+        
+        //- v-card.coloured(width='300px')
+        //-   v-card-title.cardHeader
+        //-     h4(v-if='currentUser') {{currentUser.displayName}}
+        //-   v-card-text
+        //-     a(@click='goto("profile")')
+        //-       h3.light My Own Profile
+        //-     a(@click='goto("favourites")')
+        //-       h3.light My Favourites
+        //-     a(@click='goto("history")')
+        //-       h3.light My Order History
             
-    v-dialog(v-model='profile' width='600px')
-      Profile(:onCancel='cancel')
-    v-dialog(v-model='favourites' width='600px')
-      Favourites(:onCancel='cancel')
-    v-dialog(v-model='history' width='600px')
-      History(:onCancel='cancel')
   </template>
 
 <script>

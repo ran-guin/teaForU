@@ -1,7 +1,7 @@
 <template lang='pug'>
   v-card.coloured()
     v-card-title.cardHeader
-      h2 Inspiring Tea Quotes
+      h2 Tea ...
     v-card-text
       v-container.padded
         div(v-for='quote, i in quotes' :key='i')
