@@ -3,7 +3,8 @@
 
   export default {
     data () {
-      return {}
+      return {
+      }
     },
     computed: {
       currentUser () {
@@ -13,9 +14,16 @@
       },
       loggedIn () {
         return this.currentUser.uid
+      },
+      randomNumber () {
+        var digits = 6
+        return Math.floor(Math.random() * (10**digits))
       }
     },
     methods: {
+      randomInt (digits) {
+        return Math.floor(Math.random() * (10**digits))
+      },
       firebaseLogout () {
         console.log('logout via mixin')
         this.$store.dispatch('clearCart')

@@ -179,6 +179,10 @@
       },
       count () {
         console.log('number changed...')
+      },
+      selected () {
+        console.log('selected: ' + JSON.stringify(this.selected))
+        this.updateCart()
       }
     }
   }

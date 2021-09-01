@@ -48,7 +48,7 @@
     v-dialog(v-model='showLogin' max-width='600px')
       Login(:onClose='closeDialog')
     v-dialog(v-model='editProfile' max-width='600px')
-      Profile(:onCancel='clearDialog' :onChange='loadUser')
+      Profile(:onCancel='clearDialog' :onChange='loadUser' :reload='random')
 </template>
 
 <script>
@@ -89,6 +89,7 @@
         Htab: '',
 
         title: config.headerTitle || 'Header',
+        random: 0
         // logo: 'T4U.png'
       }
     },
@@ -121,7 +122,8 @@
       },
       open (page) {
         this.clearDialog()
-        console.log('open ' + page)
+        this.random = this.randomInt(4)
+        console.log('open ' + page + ' ' + this.random)
         this.$set(this, page, true)
         // this.editProfile = true
       },

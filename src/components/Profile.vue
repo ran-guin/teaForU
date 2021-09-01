@@ -2,7 +2,7 @@
     v-container
       v-card()
         v-card-title.cardHeader
-          h2 Profile
+          h2 {{title}}
         v-card-text
           v-container.padded
             v-text-field(v-for='key, label in preset' v-model='form[label]' :label='label' :disabled='disable(key)')
@@ -28,7 +28,8 @@
         preset: {
           username: '',
           phone: '',
-          address: ''
+          address: '',
+          email: ''
         },
 
         userData: null,
@@ -38,23 +39,12 @@
     },
     props: {
       onCancel: { type: Function },
-      onChange: { type: Function }
+      onChange: { type: Function },
+      title: { type: String, default: 'User Information' },
+      reload: { type: Number, default: 0 }
     },
-    async created () {
-      console.log('User: ' + JSON.stringify(this.currentUser))
-      var user = await this.userInfo(this.currentUser.uid)
-      console.log('Info: ' + JSON.stringify(user))
-
-      if (user) { 
-        this.userData = user
-        var keys = Object.keys(this.userData)
-        for (var i = 0; i < keys.length; i++) {
-          this.$set(this.form, keys[i], this.userData[keys[i]])
-          this.$set(this.preset, keys[i], this.userData[keys[i]] || keys[i])
-        }
-      }
-      this.message = ''
-      this.error = ''
+    created () {
+      this.initialize()  
     },
     computed: {
       currentUser () {
@@ -62,6 +52,25 @@
       }
     },
     methods: {
+      async initialize () {
+        console.log('User: ' + JSON.stringify(this.currentUser))
+        var user = await this.userInfo(this.currentUser.uid)
+        console.log('Info: ' + JSON.stringify(user))
+
+        this.preset.email = user.email || this.currentUser.email
+        this.form.email = user.email || this.currentUser.email
+
+        if (user) { 
+          this.userData = user
+          var keys = Object.keys(this.userData)
+          for (var i = 0; i < keys.length; i++) {
+            this.$set(this.form, keys[i], this.userData[keys[i]])
+            this.$set(this.preset, keys[i], this.userData[keys[i]] || keys[i])
+          }
+        }
+        this.message = ''
+        this.error = ''
+      },
       update () {
         console.log('update user information...' + JSON.stringify(this.form))
 
@@ -117,6 +126,12 @@
       cancel () {
         this.onCancel()
       }    
+    },
+    watch: {
+      reload () {
+        console.log("regenerate..." + this.reload)
+        this.initialize()
+      }
     }
   }
 </script>

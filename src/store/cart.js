@@ -40,6 +40,7 @@ const mutations = {
     }
   },
   increaseQtyInCart (state, id) {
+    console.log('increment cart count...')
     for (var i = 0; i < state.Cart.length; i++) {
       if (state.Cart[i].id === id || state.Cart[i].name === id) {
         state.Cart[i].qty++
@@ -48,6 +49,7 @@ const mutations = {
     }
   },
   reduceQtyInCart (state, id) {
+    console.log('decrement cart count...')
     for (var i = 0; i < state.Cart.length; i++) {
       if (state.Cart[i].id === id || state.Cart[i].name === id) {
         if (state.Cart[i].qty) {

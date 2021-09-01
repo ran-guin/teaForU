@@ -37,8 +37,13 @@
                 v-btn.btn-primary(@click='clearModal=true') Clear Cart
               h3 Delivery Information:
               v-row.justify-space-around
-                h4 {{customer.address || 'unknown address'}}
-                v-btn(@click='customerInfo=true') Update my information 
+                div(style='border: 1px solid black; background-color: lightgrey; padding: 1rem')
+                  span(v-if='user.username') {{user.username || 'unspecified username'}}
+                  br
+                  span {{user.address || 'unknown address'}}
+                  br
+                  span(v-if='user.phone') [{{user.phone}}]
+                v-btn.btn-primary(@click='openProfile()') Update my information 
               v-radio-group(v-model='deliveryMode')
                 v-radio(value='pickup' label='Will pick up (no charge)' @click='deliveryCost=0') 
                 v-radio(value='mail' label='Deliver by mail ($)' @click='deliveryCost=mailCost') 
@@ -57,29 +62,36 @@
                 v-btn(@click='customerInfo=true') Update my information 
 
     v-dialog(v-model='customerInfo' width='500')
-      v-card(max-width='600px')
-        v-card-title.header
-          h3 Customer Information
-        v-card-text
-          v-text-field(v-model='customer.name' label='Name')
-          v-text-field(v-model='customer.address' label='Address')
-          v-text-field(v-model='customer.email' label='Email')
-          v-text-field(v-model='customer.phone' label = 'Phone')
-          v-row.justify-space-around
-            v-btn(@click='updateInfo') Update
-            v-btn(@click='clearDialog') Cancel        
+      Profile(:onCancel='clearDialog' :onChange='loadUser' title='Customer Information' :reload='random')
+      //- v-card(max-width='600px')
+      //-   v-card-title.header
+      //-     h3 Customer Information
+      //-   v-card-text
+      //-     b Customer Info
+
+        v-text-field(v-model='customer.name' label='Name')
+        v-text-field(v-model='customer.address' label='Address')
+        v-text-field(v-model='customer.email' label='Email')
+        v-text-field(v-model='customer.phone' label = 'Phone')
+        v-row.justify-space-around
+          v-btn(@click='updateInfo') Update
+          v-btn(@click='customerInfo=false') Cancel        
     v-dialog(v-model='clearModal' width='600px')
       v-card()
         v-card-text
           h3 Are you sure you want to clear the contents of the cart ?
           v-row.justify-space-around
             v-btn.btn-primary(@click='confirmClear()') Yes
-            v-btn(@click='clearDialog') Cancel        
+            v-btn(@click='clearModal=false') Cancel        
 
 </template>
 
 <script>
-import Checkout from '@/components/ManualCheckout'
+  const Profile = () => import('@/components/Profile')
+  const Checkout = () => import('@/components/ManualCheckout')
+
+    import Shared from '@/mixins/Shared'
+
 import stripe from 'stripe'
 // import { StripeCheckout } from 'vue-stripe-checkout'
 
@@ -87,8 +99,12 @@ export default {
   name: 'hello',
   components: {
     // StripeCheckout,
+    Profile,
     Checkout
   },
+  mixins: [
+    Shared
+  ],
   data () {
     return {
       showCart: true,
@@ -100,7 +116,9 @@ export default {
       customer: {},
       customerInfo: false,
 
-      clearModal: false
+      user: {},
+      clearModal: false,
+      random: 0
     }
   },
   props: {
@@ -109,6 +127,7 @@ export default {
   },
   created () {
     console.log("Contents: " + JSON.stringify(this.contents))
+    this.loadUser()
   },
   computed: {
     contents () {
@@ -176,6 +195,7 @@ export default {
     clearDialog() {
       this.closeCart()
       this.clearModal = false
+      this.customerInfo = false
     },
     confirmClear () {
       this.$store.dispatch('clearCart')
@@ -218,7 +238,16 @@ export default {
       //   console.log("stripe err: " + err.message)
       // })
 
-    }
+    },
+    openProfile () {
+      this.random = this.randomInt(5); 
+      this.customerInfo=true;
+    },
+    async loadUser () {
+      console.log('get user info from ' + JSON.stringify(this.currentUser))
+      this.user = await this.userInfo(this.currentUser.uid)
+      console.log('user: ' + JSON.stringify(this.user))
+    },
   }
 }
 </script>
