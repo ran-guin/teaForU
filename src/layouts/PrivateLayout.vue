@@ -65,7 +65,8 @@ export default {
       default: false
     },
     noFooter: {
-      type: Boolean
+      type: Boolean,
+      default: true
     },
     noHeader: {
       type: Boolean
