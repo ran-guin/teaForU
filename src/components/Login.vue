@@ -164,7 +164,7 @@
         }
       },
       recover () {
-          console.log('send password recovery request...')
+          console.log('send newpassword recovery request...')
       }
     },
     computed: {
